@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clause Review — Voice &amp; Assets Preview</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --accent:         #d03b3b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --accent:         #e66767;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .viz-root { display: block; min-height: 100vh; background: var(--page); color: var(--text-primary); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 56px; }
+  h1 { font-size: 21px; margin: 0 0 6px; font-weight: 650; }
+  .sub { font-size: 14px; color: var(--text-secondary); margin: 0 0 28px; max-width: 780px; line-height: 1.5; }
+
+  .section-label {
+    font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-muted); font-weight: 650; margin: 0 0 12px;
+  }
+
+  .states-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 34px;
+  }
+  @media (max-width: 900px) { .states-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .states-grid { grid-template-columns: 1fr; } }
+
+  .state-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 190px;
+  }
+  .state-card.is-target { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .icon-slot {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--text-primary);
+  }
+  .icon-slot svg { width: 24px; height: 24px; }
+  .icon-slot.empty {
+    color: var(--text-muted);
+    font-size: 11px;
+    border: 1px dashed var(--grid);
+    border-radius: 8px;
+    width: 100%;
+    height: 34px;
+  }
+  .state-name { font-size: 13px; font-weight: 650; margin: 0; }
+  .state-copy { font-size: 12px; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+  .state-copy.placeholder { font-style: italic; color: var(--text-muted); }
+
+  .actions-row {
+    display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;
+  }
+  .btn {
+    font-size: 13px; font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    color: var(--text-primary);
+    font-family: inherit;
+  }
+  .btn.primary { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
+
+  .kit-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 780px) { .kit-grid { grid-template-columns: repeat(2, 1fr); } }
+  .kit-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+  }
+  .kit-card .icon-slot { margin: 0 auto 10px; }
+  .kit-card .name { font-size: 12.5px; font-weight: 650; margin: 0 0 4px; }
+  .kit-card .alt { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin: 0; }
+
+  footer { margin-top: 30px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 14px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <div class="wrap">
+    <h1>Clause Review — Voice &amp; Assets Preview</h1>
+    <p class="sub">Task 3 output: one icon per non-everyday state (the everyday state deliberately gets none), the microcopy from <code>voice-prompt.md</code>, and the two key user actions.</p>
+
+    <p class="section-label">Screen states</p>
+    <div class="states-grid">
+      <div class="state-card">
+        <div class="icon-slot empty">no icon</div>
+        <p class="state-name">Common clause</p>
+        <p class="state-copy placeholder">(standard line, no special copy — clause shown plainly)</p>
+      </div>
+      <div class="state-card is-target">
+        <div class="icon-slot" id="icon-flag"></div>
+        <p class="state-name">Worth a second look</p>
+        <p class="state-copy">“This clause is worded differently from what we usually see here — worth a second look.”</p>
+      </div>
+      <div class="state-card">
+        <div class="icon-slot" id="icon-scanning"></div>
+        <p class="state-name">Comparing…</p>
+        <p class="state-copy">“Comparing this clause against common patterns…”</p>
+      </div>
+      <div class="state-card">
+        <div class="icon-slot" id="icon-uncertain"></div>
+        <p class="state-name">Not sure</p>
+        <p class="state-copy">“We couldn't confidently match this clause to a common pattern. Informational only, not legal advice — a licensed attorney can tell you more than we can here.”</p>
+      </div>
+      <div class="state-card">
+        <div class="icon-slot" id="icon-compared"></div>
+        <p class="state-name">Compared against pattern</p>
+        <p class="state-copy">Companion cue shown beside any flagged clause — signals the flag is grounded, not just the model's opinion.</p>
+      </div>
+    </div>
+
+    <p class="section-label">Key user actions</p>
+    <div class="actions-row">
+      <button class="btn primary">Upload a document to scan</button>
+      <button class="btn">Export summary</button>
+    </div>
+
+    <p class="section-label">Asset kit (reference)</p>
+    <div class="kit-grid">
+      <div class="kit-card"><div class="icon-slot" id="kit-flag"></div><p class="name">flag-nonstandard</p><p class="alt">Flag: worth a second look</p></div>
+      <div class="kit-card"><div class="icon-slot" id="kit-uncertain"></div><p class="name">uncertain-review</p><p class="alt">Uncertain: not sure, ask a professional</p></div>
+      <div class="kit-card"><div class="icon-slot" id="kit-compared"></div><p class="name">compared-pattern</p><p class="alt">Compared against a reference pattern</p></div>
+      <div class="kit-card"><div class="icon-slot" id="kit-scanning"></div><p class="name">scanning-inprogress</p><p class="alt">Comparing this clause against common patterns</p></div>
+    </div>
+
+    <footer>All four icons: SVG, single-weight line (stroke-width 1.6), 24×24 viewBox, <code>currentColor</code> stroke only — no color dependency, so black-and-white and CVD-safe by construction. None resemble scales-of-justice, a gavel, or a seal-of-approval checkmark — see <code>assets/README.md</code> for the per-asset rationale.</footer>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  flag: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="3" x2="5" y2="21"/><path d="M5 4.2 C 8 2.6, 11 2.6, 13.5 4.6 C 16 6.6, 17.6 6.1, 19 4.6 V 11.2 C 17.6 12.7, 16 13.2, 13.5 11.2 C 11 9.2, 8 9.2, 5 10.7 Z"/></svg>`,
+  uncertain: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke-dasharray="2.6 3"/><path d="M9.4 9.6c0-1.7 1.2-3 2.8-3 1.5 0 2.7 1.1 2.7 2.4 0 1.8-2.2 2.1-2.5 3.7"/><circle cx="12.1" cy="16.6" r="0.95" fill="currentColor" stroke="none"/></svg>`,
+  compared: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.4" y="5" width="8.6" height="14" rx="1.3"/><rect x="13" y="5" width="8.6" height="14" rx="1.3" stroke-dasharray="2 2"/><line x1="11.2" y1="10.2" x2="11.2" y2="13.8"/><line x1="12.8" y1="10.2" x2="12.8" y2="13.8"/></svg>`,
+  scanning: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="13" height="18" rx="1.4"/><line x1="7" y1="8" x2="14" y2="8"/><line x1="7" y1="12" x2="14" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/><path d="M15.2 9c1.8 1 3.1 3 3.1 3s-1.3 2-3.1 3" stroke-dasharray="1.4 1.6"/></svg>`
+};
+document.getElementById('icon-flag').innerHTML = ICONS.flag;
+document.getElementById('icon-scanning').innerHTML = ICONS.scanning;
+document.getElementById('icon-uncertain').innerHTML = ICONS.uncertain;
+document.getElementById('icon-compared').innerHTML = ICONS.compared;
+document.getElementById('kit-flag').innerHTML = ICONS.flag;
+document.getElementById('kit-uncertain').innerHTML = ICONS.uncertain;
+document.getElementById('kit-compared').innerHTML = ICONS.compared;
+document.getElementById('kit-scanning').innerHTML = ICONS.scanning;
+</script>
+</body>
+</html>
