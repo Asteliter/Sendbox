@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Clause Review — Voice &amp; Assets Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   .viz-root {
     color-scheme: light;
@@ -18,6 +21,10 @@
     --focus-ring:      #2a78d6;
     --hover-wash:      rgba(11,11,11,0.05);
     --press-wash:      rgba(11,11,11,0.10);
+    --brand:           #256abf;
+    --brand-hover:     #1c5cab;
+    --brand-active:    #184f95;
+    --brand-subtle:    #cde2fb;
   }
   @media (prefers-color-scheme: dark) {
     :root:where(:not([data-theme="light"])) .viz-root {
@@ -33,11 +40,15 @@
       --focus-ring:      #3987e5;
       --hover-wash:      rgba(255,255,255,0.08);
       --press-wash:      rgba(255,255,255,0.14);
+      --brand:           #256abf;
+      --brand-hover:     #1c5cab;
+      --brand-active:    #184f95;
+      --brand-subtle:    rgba(57,135,229,0.16);
     }
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
-  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  body { font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif; }
   .viz-root { display: block; min-height: 100vh; background: var(--page); color: var(--text-primary); }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 32px 24px 56px; }
   h1 { font-size: 21px; margin: 0 0 6px; font-weight: 650; }
@@ -101,9 +112,9 @@
     display: inline-flex; align-items: center; gap: 8px;
     transition: background 0.12s ease;
   }
-  .btn.primary { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
-  .btn.primary:hover, .btn.primary.force-hover { background: color-mix(in srgb, var(--text-primary) 88%, var(--surface-1)); }
-  .btn.primary:active { background: color-mix(in srgb, var(--text-primary) 78%, var(--surface-1)); }
+  .btn.primary { background: var(--brand); color: #ffffff; border-color: var(--brand); }
+  .btn.primary:hover, .btn.primary.force-hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+  .btn.primary:active { background: var(--brand-active); border-color: var(--brand-active); }
   .btn.secondary:hover, .btn.secondary.force-hover { background: var(--hover-wash); }
   .btn.secondary:active { background: var(--press-wash); }
   .btn:focus-visible, .btn.force-focus {
@@ -114,7 +125,7 @@
     opacity: 0.45;
     cursor: not-allowed;
   }
-  .btn.primary:disabled:hover, .btn.primary.force-disabled { background: var(--text-primary); }
+  .btn.primary:disabled:hover, .btn.primary.force-disabled { background: var(--brand); }
   .btn .spinner {
     width: 13px; height: 13px;
     border-radius: 50%;
@@ -170,7 +181,7 @@
     padding-left: 12px;
   }
   .clause-card .explanation { font-size: 13px; color: var(--text-primary); margin: 10px 0 0; line-height: 1.55; }
-  .clause-card .disclaimer { font-size: 11.5px; color: var(--text-muted); margin: 8px 0 0; line-height: 1.5; }
+  .clause-card .disclaimer { font-size: 11.5px; color: var(--text-secondary); margin: 8px 0 0; line-height: 1.5; }
   .clause-card .detail {
     margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--grid);
     font-size: 12.5px; color: var(--text-secondary); line-height: 1.55;
@@ -196,6 +207,26 @@
   .kit-card .name { font-size: 12.5px; font-weight: 650; margin: 0 0 4px; }
   .kit-card .alt { font-size: 11px; color: var(--text-muted); line-height: 1.4; margin: 0; }
 
+  .swatch-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px; }
+  .swatch {
+    width: 118px;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+  }
+  .swatch .chip { height: 46px; }
+  .swatch .meta { padding: 7px 9px; }
+  .swatch .name { font-size: 10.5px; font-weight: 650; margin: 0 0 2px; }
+  .swatch .ratio { font-size: 9.5px; color: var(--text-muted); margin: 0; }
+
+  .type-sample { margin-bottom: 26px; }
+  .type-sample .ts-display { font-size: 25px; font-weight: 700; margin: 0 0 6px; }
+  .type-sample .ts-h2 { font-size: 15px; font-weight: 650; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); margin: 0 0 8px; }
+  .type-sample .ts-body { font-size: 14px; font-weight: 400; line-height: 1.55; margin: 0 0 6px; max-width: 640px; }
+  .type-sample .ts-emph { font-size: 14px; font-weight: 600; line-height: 1.55; margin: 0 0 6px; }
+  .type-sample .ts-caption { font-size: 11px; font-weight: 500; color: var(--text-muted); margin: 0; }
+
   footer { margin-top: 30px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border); padding-top: 14px; line-height: 1.6; }
 </style>
 </head>
@@ -204,6 +235,26 @@
   <div class="wrap">
     <h1>Clause Review — Voice, Assets &amp; Core Controls</h1>
     <p class="sub">Task 3 output, deepened ahead of Task 4: screen states with one icon per non-everyday state, the microcopy from <code>voice-prompt.md</code>, and the buttons/badges/clause-card components from <code>component-spec.md</code> — every state and interaction spelled out before any screen gets built.</p>
+
+    <p class="section-label">Brand color — calm confidence</p>
+    <div class="swatch-row">
+      <div class="swatch"><div class="chip" style="background:var(--brand);"></div><div class="meta"><p class="name">Brand fill</p><p class="ratio">white text 5.39:1</p></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--brand-hover);"></div><div class="meta"><p class="name">Fill — hover</p><p class="ratio">#1c5cab</p></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--brand-active);"></div><div class="meta"><p class="name">Fill — press</p><p class="ratio">#184f95</p></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--focus-ring);"></div><div class="meta"><p class="name">Brand ink</p><p class="ratio">on surface ≥4.3:1</p></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--brand-subtle);"></div><div class="meta"><p class="name">Subtle bg</p><p class="ratio">info / selected</p></div></div>
+      <div class="swatch"><div class="chip" style="background:#0ca30c;"></div><div class="meta"><p class="name">Good</p><p class="ratio">status, not brand</p></div></div>
+      <div class="swatch"><div class="chip" style="background:var(--accent);"></div><div class="meta"><p class="name">Critical</p><p class="ratio">status, not brand</p></div></div>
+    </div>
+
+    <p class="section-label">Typography — Inter, one family, weight does the work</p>
+    <div class="type-sample">
+      <p class="ts-display">Clause Review</p>
+      <p class="ts-h2">Section label</p>
+      <p class="ts-body">This clause is worded differently from what we usually see here — worth a second look. Body copy stays at 400–500 weight for long reading, never the brand blue (blue is reserved for actions and links, not paragraphs).</p>
+      <p class="ts-emph">Button / badge label weight (600)</p>
+      <p class="ts-caption">Caption / alt-text weight (500) — never used for load-bearing copy like disclaimers.</p>
+    </div>
 
     <p class="section-label">Screen states</p>
     <div class="states-grid">
