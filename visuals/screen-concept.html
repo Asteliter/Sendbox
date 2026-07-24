@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal Clause Explainer — Clause Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --accent:         #d03b3b;
+    --focus-ring:      #2a78d6;
+    --hover-wash:      rgba(11,11,11,0.05);
+    --press-wash:      rgba(11,11,11,0.10);
+    --brand:           #256abf;
+    --brand-hover:     #1c5cab;
+    --brand-active:    #184f95;
+    --brand-subtle:    #cde2fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --accent:         #e66767;
+      --focus-ring:      #3987e5;
+      --hover-wash:      rgba(255,255,255,0.08);
+      --press-wash:      rgba(255,255,255,0.14);
+      --brand:           #256abf;
+      --brand-hover:     #1c5cab;
+      --brand-active:    #184f95;
+      --brand-subtle:    rgba(57,135,229,0.16);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .viz-root { display: block; min-height: 100vh; background: var(--page); color: var(--text-primary); }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 20px 90px; }
+
+  /* header */
+  .app-header { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; }
+  .logo-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 14px; flex: none;
+  }
+  .app-title { font-size: 16px; font-weight: 700; margin: 0; line-height: 1.2; }
+  .app-tagline { font-size: 11.5px; color: var(--text-muted); margin: 1px 0 0; }
+
+  /* intake row */
+  .intake {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px 14px; margin-bottom: 16px;
+  }
+  .intake .file-icon { color: var(--text-secondary); flex: none; }
+  .intake .file-meta { flex: 1; min-width: 0; }
+  .intake .file-name { font-size: 13px; font-weight: 600; margin: 0; }
+  .intake .file-sub { font-size: 11px; color: var(--text-muted); margin: 1px 0 0; }
+
+  .btn {
+    font-size: 12.5px; font-weight: 600;
+    padding: 8px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-1);
+    color: var(--text-primary);
+    font-family: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .btn.primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--focus-ring); }
+  .btn-ghost {
+    font-size: 12.5px; font-weight: 600; background: none; border: none; padding: 0;
+    color: var(--text-secondary); font-family: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-ghost:hover { text-decoration: underline; color: var(--text-primary); }
+  .btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--focus-ring); border-radius: 4px; }
+  .btn-ghost .chevron { transition: transform 0.15s ease; display: inline-block; }
+  .btn-ghost.expanded .chevron { transform: rotate(90deg); }
+
+  /* summary strip */
+  .summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  .stat-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11.5px; font-weight: 600;
+    padding: 6px 10px; border-radius: 999px;
+    background: var(--surface-1); border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+  .stat-chip svg { width: 14px; height: 14px; flex: none; }
+  .stat-chip .n { font-weight: 700; }
+
+  .section-heading {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-muted); font-weight: 650; margin: 26px 0 10px;
+  }
+
+  /* everyday / plain clause row */
+  .clause-row {
+    display: flex; align-items: baseline; gap: 10px;
+    padding: 9px 2px;
+    border-bottom: 1px solid var(--grid);
+  }
+  .clause-row:last-child { border-bottom: none; }
+  .clause-row .row-title { font-size: 12.5px; font-weight: 600; color: var(--text-secondary); flex: none; width: 140px; }
+  .clause-row .row-quote { font-size: 12.5px; color: var(--text-muted); font-style: italic; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* clause card (flagged / uncertain / comparing) */
+  .clause-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px 16px;
+    margin-bottom: 10px;
+  }
+  .clause-card .card-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 8px; }
+  .clause-card .excerpt {
+    font-size: 12.5px; font-style: italic; color: var(--text-secondary);
+    margin: 0 0 10px; line-height: 1.5;
+    border-left: 2px solid var(--grid); padding-left: 11px;
+  }
+  .clause-card .explanation { font-size: 13px; color: var(--text-primary); margin: 10px 0 0; line-height: 1.55; }
+  .clause-card .disclaimer { font-size: 11.5px; color: var(--text-secondary); margin: 8px 0 0; line-height: 1.5; }
+  .clause-card .detail {
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--grid);
+    font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; display: none;
+  }
+  .clause-card .detail.open { display: block; }
+  .clause-card .detail .ref-badge { margin-bottom: 8px; }
+  .clause-card.is-comparing { opacity: 0.75; }
+  .skeleton-line { height: 9px; background: var(--grid); border-radius: 4px; margin: 6px 0; }
+  .skeleton-line.w60 { width: 60%; } .skeleton-line.w80 { width: 80%; } .skeleton-line.w40 { width: 40%; }
+
+  .badge-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11.5px; font-weight: 600;
+    padding: 5px 10px 5px 8px; border-radius: 999px;
+    background: var(--page); border: 1px solid var(--border); color: var(--text-primary);
+  }
+  .badge-pill svg { width: 15px; height: 15px; flex: none; }
+
+  /* bottom action bar */
+  .action-bar {
+    margin-top: 26px;
+    background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  }
+  .action-bar .msg { font-size: 12.5px; color: var(--text-secondary); }
+  .action-bar .msg b { color: var(--text-primary); }
+
+  footer.note { margin-top: 22px; font-size: 11.5px; color: var(--text-muted); line-height: 1.6; }
+
+  @media (max-width: 480px) {
+    .intake { flex-wrap: wrap; }
+    .intake .file-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .intake .btn { width: 100%; order: 3; }
+    .clause-row { flex-direction: column; gap: 2px; }
+    .clause-row .row-title { width: auto; }
+    .clause-row .row-quote { white-space: normal; }
+  }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <div class="wrap">
+
+    <div class="app-header">
+      <div class="logo-mark">LC</div>
+      <div>
+        <p class="app-title">Legal Clause Explainer</p>
+        <p class="app-tagline">Informational only — not a substitute for a licensed attorney.</p>
+      </div>
+    </div>
+
+    <div class="intake">
+      <div class="file-icon" id="fileIcon"></div>
+      <div class="file-meta">
+        <p class="file-name">studio-lease-sample.txt</p>
+        <p class="file-sub">Scanned just now · 8 clauses found</p>
+      </div>
+      <button class="btn">Scan another document</button>
+    </div>
+
+    <div class="summary" id="summaryStrip"></div>
+
+    <p class="section-heading">Clauses</p>
+    <div id="clauseList"></div>
+
+    <div class="action-bar">
+      <p class="msg"><b>2 clauses</b> are worth a second look, and <b>1</b> we can't confidently place — worth reading before you sign.</p>
+      <button class="btn primary">Export summary</button>
+    </div>
+
+    <footer class="note">Documents aren't stored after this session. This screen describes what's unusual about a clause — never whether it's enforceable, fair, or safe to sign. When in doubt, a licensed attorney can tell you more than we can.</footer>
+  </div>
+</div>
+
+<script>
+const ICONS = {
+  flag: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="3" x2="5" y2="21"/><path d="M5 4.2 C 8 2.6, 11 2.6, 13.5 4.6 C 16 6.6, 17.6 6.1, 19 4.6 V 11.2 C 17.6 12.7, 16 13.2, 13.5 11.2 C 11 9.2, 8 9.2, 5 10.7 Z"/></svg>`,
+  uncertain: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke-dasharray="2.6 3"/><path d="M9.4 9.6c0-1.7 1.2-3 2.8-3 1.5 0 2.7 1.1 2.7 2.4 0 1.8-2.2 2.1-2.5 3.7"/><circle cx="12.1" cy="16.6" r="0.95" fill="currentColor" stroke="none"/></svg>`,
+  compared: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.4" y="5" width="8.6" height="14" rx="1.3"/><rect x="13" y="5" width="8.6" height="14" rx="1.3" stroke-dasharray="2 2"/><line x1="11.2" y1="10.2" x2="11.2" y2="13.8"/><line x1="12.8" y1="10.2" x2="12.8" y2="13.8"/></svg>`,
+  scanning: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="13" height="18" rx="1.4"/><line x1="7" y1="8" x2="14" y2="8"/><line x1="7" y1="12" x2="14" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/><path d="M15.2 9c1.8 1 3.1 3 3.1 3s-1.3 2-3.1 3" stroke-dasharray="1.4 1.6"/></svg>`,
+  file: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M6 2.5h8l4 4v15h-12z"/><path d="M14 2.5v4h4"/></svg>`
+};
+document.getElementById('fileIcon').innerHTML = ICONS.file;
+
+function badgeHtml(icon, label) { return `${ICONS[icon]}<span>${label}</span>`; }
+
+// Everyday clauses — plain rows, no badge, no explanation (per Task 3: "no special copy")
+const EVERYDAY = [
+  { title: 'Term', quote: 'The initial term of this Lease shall be one (1) year, commencing September 1, 2026…' },
+  { title: 'Rent', quote: 'Tenant shall pay Landlord monthly rent of $2,400, due on the first day of each month.' },
+  { title: 'Security deposit', quote: 'Tenant shall deposit $2,400 as security, refundable within 30 days of move-out…' },
+  { title: 'Governing law', quote: 'This Lease shall be governed by the laws of the state in which the Premises are located.' },
+];
+
+// Flagged / uncertain / comparing clauses — full cards
+const FLAGGED = [
+  {
+    state: 'flag',
+    title: 'Renewal',
+    excerpt: '"This Lease shall automatically renew for successive one-year terms … unless either party provides written notice of non-renewal no less than ninety (90) days prior to the expiration of the then-current term."',
+    explanation: 'This clause is worded differently from what we usually see here — worth a second look.',
+    disclaimer: true,
+    refBadge: 'compared',
+    refText: 'Reference pattern: renewal clauses typically require 30–60 days\' notice and convert to month-to-month. This one requires 90 days and auto-renews for a full additional one-year term.'
+  },
+  {
+    state: 'flag',
+    title: 'Liability and indemnification',
+    excerpt: '"Tenant shall be responsible for all damage to the Premises occurring during the Lease term, regardless of cause…"',
+    explanation: 'This clause is worded differently from what we usually see here — worth a second look.',
+    disclaimer: true,
+    refBadge: 'compared',
+    refText: 'Reference pattern: liability clauses are typically limited to damage caused by the tenant\'s own negligence. This one extends to damage "regardless of cause."'
+  },
+];
+
+const COMPARING = {
+  title: 'Early termination',
+};
+
+const UNCERTAIN = {
+  title: 'Dispute resolution',
+  excerpt: '"Any dispute arising under this Lease shall be resolved exclusively through binding arbitration … each party waives any right to a jury trial or to participate in a class action."',
+  explanation: 'We couldn\'t confidently match this clause to a common pattern — arbitration terms vary widely by document type and region.',
+};
+
+// Summary strip
+const summary = document.getElementById('summaryStrip');
+summary.innerHTML = `
+  <span class="stat-chip"><span class="n">${EVERYDAY.length}</span> common</span>
+  <span class="stat-chip">${badgeHtml('flag','')}<span class="n">${FLAGGED.length}</span> worth a second look</span>
+  <span class="stat-chip">${badgeHtml('scanning','')}<span class="n">1</span> comparing</span>
+  <span class="stat-chip">${badgeHtml('uncertain','')}<span class="n">1</span> not sure</span>
+`;
+
+// Clause list
+const list = document.getElementById('clauseList');
+
+EVERYDAY.forEach(c => {
+  const row = document.createElement('div');
+  row.className = 'clause-row';
+  row.innerHTML = `<span class="row-title">${c.title}</span><span class="row-quote">${c.quote}</span>`;
+  list.appendChild(row);
+});
+
+FLAGGED.forEach(c => {
+  const card = document.createElement('div');
+  card.className = 'clause-card';
+  card.innerHTML = `
+    <p class="card-title">${c.title}</p>
+    <p class="excerpt">${c.excerpt}</p>
+    <span class="badge-pill">${badgeHtml('flag', 'Worth a second look')}</span>
+    <p class="explanation">${c.explanation}</p>
+    <p class="disclaimer">Informational only, not legal advice — consider having this reviewed by a licensed attorney.</p>
+    <button class="btn-ghost why-btn" style="margin-top:10px;"><span class="chevron">›</span>Why was this flagged?</button>
+    <div class="detail">
+      <span class="badge-pill ref-badge">${badgeHtml(c.refBadge, 'Compared against a reference pattern')}</span>
+      <p style="margin:0;">${c.refText}</p>
+    </div>`;
+  list.appendChild(card);
+  const whyBtn = card.querySelector('.why-btn');
+  const detail = card.querySelector('.detail');
+  whyBtn.addEventListener('click', () => {
+    const isOpen = detail.classList.toggle('open');
+    whyBtn.classList.toggle('expanded', isOpen);
+    whyBtn.innerHTML = `<span class="chevron">›</span>${isOpen ? 'Hide details' : 'Why was this flagged?'}`;
+  });
+});
+
+// Comparing (in-progress) card — skeleton, no badge text needed beyond the icon+label itself
+const comparingCard = document.createElement('div');
+comparingCard.className = 'clause-card is-comparing';
+comparingCard.innerHTML = `
+  <p class="card-title">${COMPARING.title}</p>
+  <span class="badge-pill">${badgeHtml('scanning', 'Comparing…')}</span>
+  <div class="skeleton-line w80" style="margin-top:12px;"></div>
+  <div class="skeleton-line w60"></div>
+  <div class="skeleton-line w40"></div>
+`;
+list.appendChild(comparingCard);
+
+// Uncertain card — no "why flagged" toggle, since there's no reference match to show
+const uncertainCard = document.createElement('div');
+uncertainCard.className = 'clause-card';
+uncertainCard.innerHTML = `
+  <p class="card-title">${UNCERTAIN.title}</p>
+  <p class="excerpt">${UNCERTAIN.excerpt}</p>
+  <span class="badge-pill">${badgeHtml('uncertain', 'Not sure — ask a professional')}</span>
+  <p class="explanation">${UNCERTAIN.explanation}</p>
+  <p class="disclaimer">Informational only, not legal advice — a licensed attorney can tell you more than we can here.</p>
+`;
+list.appendChild(uncertainCard);
+</script>
+</body>
+</html>
