@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CJM — Signing a lease you don't fully understand</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --line-muted:     #c3c2b7;
+    --dot-muted:      #898781;
+    --accent:         #d03b3b;   /* status: critical — redesign target */
+    --good:           #0ca30c;
+    --warning:        #fab219;
+    --serious:        #ec835a;
+    --critical:       #d03b3b;
+    --lock:           #52514e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --line-muted:     #52514e;
+      --dot-muted:      #898781;
+      --accent:         #e66767;
+      --good:           #0ca30c;
+      --warning:        #fab219;
+      --serious:        #ec835a;
+      --critical:       #e66767;
+      --lock:           #c3c2b7;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .viz-root {
+    display: block;
+    min-height: 100vh;
+    background: var(--page);
+    color: var(--text-primary);
+  }
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 32px 24px 56px;
+  }
+  header h1 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    font-weight: 650;
+  }
+  header .jtbd {
+    font-size: 14.5px;
+    color: var(--text-secondary);
+    margin: 0 0 24px;
+    max-width: 900px;
+    line-height: 1.5;
+  }
+  header .jtbd b { color: var(--text-primary); font-weight: 600; }
+
+  .card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+
+  .chart-card { padding: 20px 24px 8px; margin-bottom: 22px; }
+  .chart-card h2 {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin: 0 0 4px;
+  }
+  svg { display: block; overflow: visible; }
+  .grid-line { stroke: var(--grid); stroke-width: 1; }
+  .baseline { stroke: var(--baseline); stroke-width: 1; }
+  .emotion-line { fill: none; stroke: var(--line-muted); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .emotion-line.accent-seg { stroke: var(--accent); }
+  .pt { fill: var(--dot-muted); stroke: var(--surface-1); stroke-width: 2; }
+  .pt.accent { fill: var(--accent); }
+  .pt-hit { fill: transparent; cursor: pointer; }
+  .glyph { font-size: 20px; text-anchor: middle; }
+  .phase-tick { font-size: 12px; fill: var(--text-secondary); text-anchor: middle; }
+  .axis-label { font-size: 10.5px; fill: var(--text-muted); }
+
+  .target-callout {
+    margin-top: 6px;
+    border-left: 3px solid var(--critical);
+    background: var(--page);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+  }
+  .target-callout .tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--critical);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 4px;
+  }
+
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--text-primary);
+    color: var(--surface-1);
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 9px 12px;
+    border-radius: 8px;
+    max-width: 260px;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    z-index: 20;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip .t-phase { font-weight: 700; margin-bottom: 3px; }
+  .tooltip .t-trigger { color: var(--surface-1); opacity: 0.85; }
+
+  .chart-wrap { position: relative; }
+
+  .phases-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-top: 4px;
+  }
+  @media (max-width: 980px) {
+    .phases-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .phases-grid { grid-template-columns: 1fr; }
+  }
+
+  .phase-card {
+    padding: 16px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .phase-card.is-target {
+    border-color: var(--critical);
+    box-shadow: 0 0 0 1px var(--critical);
+  }
+  .phase-card .ribbon {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--critical);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .phase-card h3 {
+    margin: 0;
+    font-size: 14.5px;
+    font-weight: 650;
+  }
+  .field { }
+  .field .k {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin: 0 0 3px;
+  }
+  .field .v {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+  }
+  .field .v.primary { color: var(--text-primary); }
+  .lock { color: var(--lock); font-size: 11px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 9px 4px 7px;
+    border-radius: 999px;
+    background: var(--page);
+    color: var(--text-primary);
+    width: fit-content;
+    border: 1px solid var(--border);
+  }
+  .badge .dot { width: 8px; height: 8px; border-radius: 50%; flex: none; }
+  .badge .dot.good { background: var(--good); }
+  .badge .dot.warning { background: var(--warning); }
+  .badge .dot.serious { background: var(--serious); }
+  .badge .dot.critical { background: var(--critical); }
+
+  .hmw {
+    font-size: 12.5px;
+    color: var(--text-primary);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  footer {
+    margin-top: 26px;
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 14px;
+  }
+  footer b { color: var(--text-secondary); }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <div class="wrap">
+    <header>
+      <h1>CJM — Signing a lease you don't fully understand</h1>
+      <p class="jtbd"><b>JTBD:</b> When I'm about to sign a legal document I don't fully understand and can't justify hiring a lawyer for, I want to quickly see which specific clauses are unusual or risky and what to double-check, so I can sign with informed confidence instead of blind hope.</p>
+    </header>
+
+    <div class="card chart-card">
+      <h2>Emotional arc</h2>
+      <div class="chart-wrap" id="chartWrap">
+        <svg id="chartSvg" width="100%" height="230" viewBox="0 0 1100 230" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+      <div class="target-callout" id="targetCallout"></div>
+    </div>
+
+    <div class="phases-grid" id="phasesGrid"></div>
+
+    <footer>
+      <b>Assumptions:</b> lease assumed to arrive as email/PDF (story only says "sent over"); Renewal and Liability reads assumed same sitting; emotional arc inferred from narrative detail (rereading three times, googling, not wanting to seem difficult) rather than stated directly; "regardless of cause" read as worrying-but-not-panicked, per the story's measured tone.
+    </footer>
+  </div>
+</div>
+
+<script>
+const phases = [
+  {
+    name: "Receiving the\ndocument",
+    glyph: "😐",
+    sentiment: 1,
+    trigger: "Landlord's lawyer sends over the 14-page lease. — dense legal language, a lot to get through.",
+    actions: "Landlord's lawyer sends over the 14-page lease ahead of signing.",
+    touchpoints: "🔒 The lease document itself (email/PDF)",
+    lock: true,
+    hmw: "How might we help someone see, before they start reading, how much of the document actually needs careful attention?",
+    ai: { level: "good", label: "Low risk — structural only" },
+    target: false
+  },
+  {
+    name: "Skimming\nfamiliar terms",
+    glyph: "🙂",
+    sentiment: 2,
+    trigger: "Checks rent and move-in date — both look normal.",
+    actions: "Skims for rent amount and move-in date — looks fine, keeps going.",
+    touchpoints: "The document pages, read directly",
+    lock: false,
+    hmw: "How might we confirm the parts already checked really are ordinary, so there's no need to re-read out of anxiety?",
+    ai: { level: "good", label: "Low risk — pattern match" },
+    target: false
+  },
+  {
+    name: "Hitting confusing\nclauses",
+    glyph: "😠",
+    sentiment: -1,
+    trigger: "Rereads “automatically renewing … unless written notice … ninety (90) days” three times, still unsure what happens if she misses it; then “regardless of cause” liability wording.",
+    actions: "Rereads the “Renewal” paragraph three times; a few pages later reads “Liability” on damage “regardless of cause.”",
+    touchpoints: "The document pages — no outside help in the moment",
+    lock: false,
+    hmw: "How might we translate a specific unusual clause into a plain-language flag the moment someone gets stuck, without saying whether it's legally enforceable?",
+    ai: { level: "critical", label: "High caution — core moment, no verdicts" },
+    target: true
+  },
+  {
+    name: "Searching for\nanswers",
+    glyph: "😞",
+    sentiment: -2,
+    trigger: "Googles the exact phrases — only generic law-firm blog posts, nothing about her document.",
+    actions: "Googles a couple of the exact phrases from the lease.",
+    touchpoints: "Google search → generic law-firm blog posts",
+    lock: false,
+    hmw: "How might we let someone check if a specific clause is common or unusual, instead of a generic article that knows nothing about their document?",
+    ai: { level: "warning", label: "Medium — grounded comparison only" },
+    target: false
+  },
+  {
+    name: "Deciding to\nsign anyway",
+    glyph: "😞",
+    sentiment: -2,
+    trigger: "Doesn't want to seem “difficult” by questioning the clause; signs, tells herself she'll deal with it if it becomes a problem.",
+    actions: "Weighs pushing back vs. looking difficult; signs anyway.",
+    touchpoints: "Signing the lease",
+    lock: false,
+    hmw: "How might we give enough clarity before signing to decide, on her own, whether a clause is worth a second opinion — without feeling “difficult”?",
+    ai: { level: "serious", label: "Caution — never decide for her" },
+    target: false
+  }
+];
+
+// ---- Chart ----
+const svg = document.getElementById('chartSvg');
+const W = 1100, H = 230;
+const padL = 40, padR = 40, padT = 34, padB = 46;
+const plotW = W - padL - padR;
+const plotH = H - padT - padB;
+const n = phases.length;
+const xFor = i => padL + (plotW / (n - 1)) * i;
+const sMin = -2.4, sMax = 2.4;
+const yFor = s => padT + plotH * (1 - (s - sMin) / (sMax - sMin));
+
+const svgns = "http://www.w3.org/2000/svg";
+function el(tag, attrs) {
+  const e = document.createElementNS(svgns, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  return e;
+}
+
+// baseline (neutral = 0)
+svg.appendChild(el('line', { x1: padL, x2: W - padR, y1: yFor(0), y2: yFor(0), class: 'baseline' }));
+
+// polyline path, split into segments so the target segment can be accented
+for (let i = 0; i < n - 1; i++) {
+  const isAccentSeg = phases[i].target || phases[i+1].target;
+  const line = el('line', {
+    x1: xFor(i), y1: yFor(phases[i].sentiment),
+    x2: xFor(i+1), y2: yFor(phases[i+1].sentiment),
+    class: 'emotion-line' + (isAccentSeg ? ' accent-seg' : '')
+  });
+  svg.appendChild(line);
+}
+
+// phase tick labels (multi-line)
+phases.forEach((p, i) => {
+  const lines = p.name.split("\n");
+  lines.forEach((ln, li) => {
+    const t = el('text', { x: xFor(i), y: H - padB + 22 + li * 14, class: 'phase-tick' });
+    t.textContent = ln;
+    svg.appendChild(t);
+  });
+});
+
+// points + glyphs + hit areas
+const tooltip = document.getElementById('tooltip');
+const chartWrap = document.getElementById('chartWrap');
+
+phases.forEach((p, i) => {
+  const cx = xFor(i), cy = yFor(p.sentiment);
+  const dot = el('circle', { cx, cy, r: 6, class: 'pt' + (p.target ? ' accent' : '') });
+  svg.appendChild(dot);
+
+  const glyph = el('text', { x: cx, y: cy - 16, class: 'glyph' });
+  glyph.textContent = p.glyph;
+  svg.appendChild(glyph);
+
+  const hit = el('circle', { cx, cy, r: 20, class: 'pt-hit' });
+  hit.addEventListener('mouseenter', () => showTip(i));
+  hit.addEventListener('mousemove', (e) => positionTip(e));
+  hit.addEventListener('mouseleave', hideTip);
+  hit.addEventListener('focus', () => showTip(i));
+  hit.setAttribute('tabindex', '0');
+  svg.appendChild(hit);
+});
+
+function showTip(i) {
+  const p = phases[i];
+  tooltip.innerHTML = '<div class="t-phase"></div><div class="t-trigger"></div>';
+  tooltip.querySelector('.t-phase').textContent = p.name.replace("\n", " ") + "  " + p.glyph;
+  tooltip.querySelector('.t-trigger').textContent = p.trigger;
+  tooltip.classList.add('show');
+}
+function positionTip(e) {
+  const rect = chartWrap.getBoundingClientRect();
+  tooltip.style.left = (e.clientX - rect.left + 14) + 'px';
+  tooltip.style.top = (e.clientY - rect.top - 46) + 'px';
+}
+function hideTip() { tooltip.classList.remove('show'); }
+
+// redesign-target callout, static block under the chart
+const targetIdx = phases.findIndex(p => p.target);
+const callout = document.getElementById('targetCallout');
+callout.innerHTML = '<span class="tag">🎯 Redesign target — ' + phases[targetIdx].name.replace("\n", " ") + '</span><br>' +
+  phases[targetIdx].hmw;
+
+// ---- Phase cards ----
+const grid = document.getElementById('phasesGrid');
+phases.forEach(p => {
+  const card = document.createElement('div');
+  card.className = 'card phase-card' + (p.target ? ' is-target' : '');
+  card.innerHTML = `
+    ${p.target ? '<div class="ribbon">🎯 Redesign target</div>' : ''}
+    <h3>${p.name.replace("\n", " ")}</h3>
+    <div class="field">
+      <p class="k">Actions</p>
+      <p class="v">${p.actions}</p>
+    </div>
+    <div class="field">
+      <p class="k">Touchpoints</p>
+      <p class="v">${p.touchpoints}</p>
+    </div>
+    <div class="field">
+      <p class="k">Thoughts &amp; emotions</p>
+      <p class="v primary">${p.glyph} ${p.trigger}</p>
+    </div>
+    <div class="field">
+      <p class="k">Pain point</p>
+      <p class="hmw">${p.hmw}</p>
+    </div>
+    <span class="badge"><span class="dot ${p.ai.level}"></span>${p.ai.label}</span>
+  `;
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
