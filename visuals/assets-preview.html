@@ -15,6 +15,9 @@
     --grid:           #e1e0d9;
     --border:         rgba(11,11,11,0.10);
     --accent:         #d03b3b;
+    --focus-ring:      #2a78d6;
+    --hover-wash:      rgba(11,11,11,0.05);
+    --press-wash:      rgba(11,11,11,0.10);
   }
   @media (prefers-color-scheme: dark) {
     :root:where(:not([data-theme="light"])) .viz-root {
@@ -27,6 +30,9 @@
       --grid:           #2c2c2a;
       --border:         rgba(255,255,255,0.10);
       --accent:         #e66767;
+      --focus-ring:      #3987e5;
+      --hover-wash:      rgba(255,255,255,0.08);
+      --press-wash:      rgba(255,255,255,0.14);
     }
   }
   * { box-sizing: border-box; }
@@ -81,7 +87,7 @@
   .state-copy.placeholder { font-style: italic; color: var(--text-muted); }
 
   .actions-row {
-    display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;
+    display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center;
   }
   .btn {
     font-size: 13px; font-weight: 600;
@@ -91,8 +97,87 @@
     background: var(--surface-1);
     color: var(--text-primary);
     font-family: inherit;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background 0.12s ease;
   }
   .btn.primary { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
+  .btn.primary:hover, .btn.primary.force-hover { background: color-mix(in srgb, var(--text-primary) 88%, var(--surface-1)); }
+  .btn.primary:active { background: color-mix(in srgb, var(--text-primary) 78%, var(--surface-1)); }
+  .btn.secondary:hover, .btn.secondary.force-hover { background: var(--hover-wash); }
+  .btn.secondary:active { background: var(--press-wash); }
+  .btn:focus-visible, .btn.force-focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--focus-ring);
+  }
+  .btn:disabled, .btn.force-disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .btn.primary:disabled:hover, .btn.primary.force-disabled { background: var(--text-primary); }
+  .btn .spinner {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    animation: spin 0.7s linear infinite;
+    flex: none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .btn-ghost {
+    font-size: 12.5px; font-weight: 600;
+    background: none; border: none; padding: 0;
+    color: var(--text-secondary);
+    font-family: inherit;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-ghost:hover { text-decoration: underline; color: var(--text-primary); }
+  .btn-ghost:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--focus-ring);
+    border-radius: 4px;
+  }
+  .btn-ghost .chevron { transition: transform 0.15s ease; display: inline-block; }
+  .btn-ghost.expanded .chevron { transform: rotate(90deg); }
+
+  .variant-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+  .variant-label { font-size: 10.5px; color: var(--text-muted); width: 100%; margin-bottom: -6px; }
+
+  .badge-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11.5px; font-weight: 600;
+    padding: 5px 10px 5px 8px;
+    border-radius: 999px;
+    background: var(--page);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
+  .badge-pill svg { width: 15px; height: 15px; flex: none; }
+
+  .clause-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  .clause-card .excerpt {
+    font-size: 13px; font-style: italic; color: var(--text-secondary);
+    margin: 0 0 10px; line-height: 1.55;
+    border-left: 2px solid var(--grid);
+    padding-left: 12px;
+  }
+  .clause-card .explanation { font-size: 13px; color: var(--text-primary); margin: 10px 0 0; line-height: 1.55; }
+  .clause-card .disclaimer { font-size: 11.5px; color: var(--text-muted); margin: 8px 0 0; line-height: 1.5; }
+  .clause-card .detail {
+    margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--grid);
+    font-size: 12.5px; color: var(--text-secondary); line-height: 1.55;
+    display: none;
+  }
+  .clause-card .detail.open { display: block; }
+  .clause-card .detail .ref-badge { margin-bottom: 8px; }
 
   .kit-grid {
     display: grid;
@@ -117,8 +202,8 @@
 <body>
 <div class="viz-root">
   <div class="wrap">
-    <h1>Clause Review — Voice &amp; Assets Preview</h1>
-    <p class="sub">Task 3 output: one icon per non-everyday state (the everyday state deliberately gets none), the microcopy from <code>voice-prompt.md</code>, and the two key user actions.</p>
+    <h1>Clause Review — Voice, Assets &amp; Core Controls</h1>
+    <p class="sub">Task 3 output, deepened ahead of Task 4: screen states with one icon per non-everyday state, the microcopy from <code>voice-prompt.md</code>, and the buttons/badges/clause-card components from <code>component-spec.md</code> — every state and interaction spelled out before any screen gets built.</p>
 
     <p class="section-label">Screen states</p>
     <div class="states-grid">
@@ -149,10 +234,49 @@
       </div>
     </div>
 
-    <p class="section-label">Key user actions</p>
-    <div class="actions-row">
+    <p class="section-label">Buttons — every state</p>
+
+    <p class="variant-label">Primary — default · hover · focus-visible · disabled · loading</p>
+    <div class="variant-row">
       <button class="btn primary">Upload a document to scan</button>
-      <button class="btn">Export summary</button>
+      <button class="btn primary force-hover">Upload a document to scan</button>
+      <button class="btn primary force-focus">Upload a document to scan</button>
+      <button class="btn primary force-disabled" disabled>Upload a document to scan</button>
+      <button class="btn primary" disabled><span class="spinner"></span>Scanning your document…</button>
+    </div>
+
+    <p class="variant-label">Secondary — default · hover · focus-visible · disabled</p>
+    <div class="variant-row">
+      <button class="btn secondary">Export summary</button>
+      <button class="btn secondary force-hover">Export summary</button>
+      <button class="btn secondary force-focus">Export summary</button>
+      <button class="btn secondary force-disabled" disabled>Export summary</button>
+    </div>
+
+    <p class="variant-label">Ghost / text — used inside a clause card</p>
+    <div class="variant-row">
+      <button class="btn-ghost"><span class="chevron">›</span>Why was this flagged?</button>
+      <button class="btn-ghost expanded"><span class="chevron">›</span>Hide details</button>
+    </div>
+
+    <p class="section-label" style="margin-top:26px;">Live demo — upload → scan → clause card</p>
+    <div class="variant-row">
+      <button class="btn primary" id="demoUploadBtn">Upload a document to scan</button>
+      <button class="btn secondary" id="demoExportBtn" disabled>Export summary</button>
+    </div>
+    <div id="demoResult"></div>
+
+    <p class="section-label" style="margin-top:26px;">Clause card anatomy (expanded, static)</p>
+    <div class="clause-card">
+      <p class="excerpt">"This Lease shall automatically renew for successive one-year terms … unless either party provides written notice of non-renewal no less than ninety (90) days prior to the expiration of the then-current term."</p>
+      <span class="badge-pill" id="anatomy-badge"></span>
+      <p class="explanation">This clause is worded differently from what we usually see here — worth a second look.</p>
+      <p class="disclaimer">Informational only, not legal advice — consider having this reviewed by a licensed attorney.</p>
+      <button class="btn-ghost expanded" style="margin-top:10px;"><span class="chevron">›</span>Hide details</button>
+      <div class="detail open">
+        <span class="badge-pill ref-badge" id="anatomy-badge-2"></span>
+        <p style="margin:0;">Reference pattern: renewal clauses typically require 30–60 days' notice and convert to month-to-month. This one requires 90 days and auto-renews for a full additional one-year term.</p>
+      </div>
     </div>
 
     <p class="section-label">Asset kit (reference)</p>
@@ -182,6 +306,46 @@ document.getElementById('kit-flag').innerHTML = ICONS.flag;
 document.getElementById('kit-uncertain').innerHTML = ICONS.uncertain;
 document.getElementById('kit-compared').innerHTML = ICONS.compared;
 document.getElementById('kit-scanning').innerHTML = ICONS.scanning;
+
+function badgeHtml(icon, label) {
+  return `${ICONS[icon]}<span>${label}</span>`;
+}
+document.getElementById('anatomy-badge').innerHTML = badgeHtml('flag', 'Worth a second look');
+document.getElementById('anatomy-badge-2').innerHTML = badgeHtml('compared', 'Compared against a reference pattern');
+
+// Live demo: click "Upload" -> loading state -> reveal a real clause card
+const uploadBtn = document.getElementById('demoUploadBtn');
+const exportBtn = document.getElementById('demoExportBtn');
+const resultBox = document.getElementById('demoResult');
+uploadBtn.addEventListener('click', () => {
+  uploadBtn.disabled = true;
+  uploadBtn.innerHTML = '<span class="spinner"></span>Scanning your document…';
+  resultBox.innerHTML = '';
+  setTimeout(() => {
+    uploadBtn.disabled = false;
+    uploadBtn.textContent = 'Upload a document to scan';
+    exportBtn.disabled = false;
+    resultBox.innerHTML = `
+      <div class="clause-card">
+        <p class="excerpt">"Tenant shall be responsible for all damage to the Premises occurring during the Lease term, regardless of cause…"</p>
+        <span class="badge-pill">${badgeHtml('flag', 'Worth a second look')}</span>
+        <p class="explanation">This clause is worded differently from what we usually see here — worth a second look.</p>
+        <p class="disclaimer">Informational only, not legal advice — consider having this reviewed by a licensed attorney.</p>
+        <button class="btn-ghost" id="demoWhyBtn" style="margin-top:10px;"><span class="chevron">›</span>Why was this flagged?</button>
+        <div class="detail" id="demoDetail">
+          <span class="badge-pill ref-badge">${badgeHtml('compared', 'Compared against a reference pattern')}</span>
+          <p style="margin:0;">Reference pattern: liability clauses are typically limited to damage caused by the tenant's own negligence. This one extends to damage "regardless of cause."</p>
+        </div>
+      </div>`;
+    const whyBtn = document.getElementById('demoWhyBtn');
+    const detail = document.getElementById('demoDetail');
+    whyBtn.addEventListener('click', () => {
+      const isOpen = detail.classList.toggle('open');
+      whyBtn.classList.toggle('expanded', isOpen);
+      whyBtn.innerHTML = `<span class="chevron">›</span>${isOpen ? 'Hide details' : 'Why was this flagged?'}`;
+    });
+  }, 1200);
+});
 </script>
 </body>
 </html>
