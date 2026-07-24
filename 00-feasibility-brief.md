@@ -17,3 +17,28 @@
 
 ### AI in your work
 **Yes** — approved tools (Claude / DIAL / Figma Make) speed up building the screen and the agent pipeline, but only against de-identified/synthetic contract data (see `materials/studio-lease-sample.txt`) during design and testing — never real user documents.
+
+---
+
+## Regulatory / ethical class
+
+Not a legal determination — a working assumption for design scope, to confirm with compliance before ship (same "flag, don't verdict" principle as the product itself).
+
+| Framework / concern | Applies? | Note |
+|---|:---:|---|
+| **EU AI Act** | Likely limited-risk | Informational aid only — no legal conclusion or adjudication generated, doesn't sit in an "administration of justice" role. Still triggers a transparency obligation: user must be told content is AI-generated. |
+| **GDPR / data privacy** | Yes | Contract text can carry PII (names, addresses, financial terms) — no retention beyond session without opt-in, no training use (already in Data & privacy above). |
+| **Unauthorized practice of law (UPL) statutes** | Yes — varies by jurisdiction | Output must never render an enforceability/legal verdict; framed strictly as descriptive/comparative against a reference library, never advisory. |
+| **Consumer / unfair-contract-terms law** | Possibly relevant | Could inform what counts as "unusual" per region. v1 assumes a single reference jurisdiction (see Out of scope). |
+
+## Worst-case failure scenario
+
+The agent either invents a legal-sounding conclusion ("this clause is enforceable") or stays silent on a genuinely predatory clause because it wasn't in the reference library — the user reads that silence as reassurance, signs, and the clause is later enforced against them. They say "the tool told me it was fine," even though it never should have implied that. Result: real harm to the user, reputational exposure, and a plausible unauthorized-practice-of-law complaint.
+
+## Out of scope for v1
+
+- No OCR / scanned-PDF support — assumes machine-readable text input
+- Single reference jurisdiction only — no jurisdiction picker
+- English-language contracts only
+- Flagging only, no negotiation/redline suggestions
+- No multi-document comparison
