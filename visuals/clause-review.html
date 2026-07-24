@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal Clause Explainer — Clause Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-2:      #f3f3f0;
+    --page:           #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --border:         rgba(11,11,11,0.10);
+    --focus-ring:      #2a78d6;
+    --hover-wash:      rgba(11,11,11,0.05);
+    --press-wash:      rgba(11,11,11,0.10);
+    --brand:           #256abf;
+    --brand-hover:     #1c5cab;
+    --brand-active:    #184f95;
+    --brand-subtle:    #cde2fb;
+    --risk-high:       #d03b3b;
+    --risk-medium:     #b8511f;
+    --risk-low:        #5b7285;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --surface-2:      #212120;
+      --page:           #0d0d0d;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --border:         rgba(255,255,255,0.10);
+      --focus-ring:      #3987e5;
+      --hover-wash:      rgba(255,255,255,0.08);
+      --press-wash:      rgba(255,255,255,0.14);
+      --brand:           #256abf;
+      --brand-hover:     #1c5cab;
+      --brand-active:    #184f95;
+      --brand-subtle:    rgba(57,135,229,0.16);
+      --risk-high:       #e66767;
+      --risk-medium:     #ec835a;
+      --risk-low:        #93a8b8;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; height: 100%; }
+  body { font-family: 'Inter', system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .viz-root { display: block; min-height: 100vh; background: var(--page); color: var(--text-primary); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  .view { display: none; }
+  .view.active { display: block; animation: fadeUp .35s ease; }
+
+  /* ---------- Landing ---------- */
+  .view-landing .landing-inner {
+    max-width: 560px; margin: 0 auto; min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 40px 24px;
+  }
+  .logo-mark-lg {
+    width: 56px; height: 56px; border-radius: 14px;
+    background: var(--brand); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 22px; margin-bottom: 22px;
+  }
+  .landing-inner h1 { font-size: 30px; font-weight: 800; margin: 0 0 12px; letter-spacing: -0.01em; }
+  .landing-sub { font-size: 15px; color: var(--text-secondary); line-height: 1.55; margin: 0 0 32px; max-width: 440px; }
+  .btn-lg { font-size: 14.5px; padding: 14px 28px; border-radius: 10px; }
+  .landing-note { font-size: 11.5px; color: var(--text-muted); margin-top: 20px; line-height: 1.6; max-width: 380px; }
+
+  /* ---------- Loading ---------- */
+  .view-loading .loading-inner {
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  }
+  .scan-icon-wrap { color: var(--brand); }
+  .scan-icon-wrap .sweep { stroke-dasharray: 1.4 1.6; animation: sweepMove 1.1s linear infinite; }
+  @keyframes sweepMove { to { stroke-dashoffset: -12; } }
+  .loading-inner p { font-size: 14px; font-weight: 600; color: var(--text-primary); margin: 0; }
+  .loading-inner .file-tag { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+  /* ---------- Buttons (shared) ---------- */
+  .btn {
+    font-size: 12.5px; font-weight: 600; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--surface-1); color: var(--text-primary);
+    font-family: inherit; cursor: pointer; white-space: nowrap;
+  }
+  .btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+  .btn.primary:hover { background: var(--brand-hover); border-color: var(--brand-hover); }
+  .btn:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--focus-ring); }
+  .btn-ghost {
+    font-size: 12.5px; font-weight: 600; background: none; border: none; padding: 0;
+    color: var(--text-secondary); font-family: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-ghost:hover { text-decoration: underline; color: var(--text-primary); }
+  .btn-ghost:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--surface-1), 0 0 0 4px var(--focus-ring); border-radius: 4px; }
+  .btn-ghost .chevron { transition: transform 0.15s ease; display: inline-block; }
+  .btn-ghost.expanded .chevron { transform: rotate(90deg); }
+
+  /* ---------- Review: header ---------- */
+  .review-header {
+    display: flex; align-items: center; gap: 10px; justify-content: space-between;
+    padding: 14px 20px; border-bottom: 1px solid var(--border); background: var(--surface-1);
+    position: sticky; top: 0; z-index: 5;
+  }
+  .review-header .brand-row { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .logo-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--brand); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex: none; }
+  .app-title { font-size: 14.5px; font-weight: 700; margin: 0; line-height: 1.2; }
+  .app-tagline { font-size: 11px; color: var(--text-muted); margin: 1px 0 0; }
+
+  .file-strip {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 20px; border-bottom: 1px solid var(--border); background: var(--page);
+    font-size: 12px; color: var(--text-muted);
+  }
+  .file-strip svg { color: var(--text-secondary); flex: none; }
+  .file-strip .file-name { color: var(--text-primary); font-weight: 600; }
+
+  /* ---------- Split layout ---------- */
+  .split { display: flex; align-items: flex-start; }
+  .doc-pane {
+    flex: 1 1 60%; min-width: 0;
+    height: calc(100vh - 96px); overflow-y: auto;
+    padding: 26px 34px 60px;
+  }
+  .doc-pane .doc-title { font-size: 17px; font-weight: 700; margin: 0 0 4px; }
+  .doc-pane .doc-sub { font-size: 12px; color: var(--text-muted); margin: 0 0 22px; }
+  .doc-section { margin-bottom: 18px; }
+  .doc-section h3 {
+    font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em;
+    color: var(--text-muted); margin: 0 0 6px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .doc-section p { font-size: 13.5px; line-height: 1.65; color: var(--text-primary); margin: 0; }
+
+  .risk-highlight {
+    display: block; width: 100%; text-align: left; font: inherit; color: inherit;
+    background: transparent; border: none; border-left: 3px solid transparent;
+    padding: 6px 10px; margin: 0 0 0 -10px; width: calc(100% + 10px);
+    cursor: pointer; border-radius: 6px; line-height: 1.65; font-size: 13.5px;
+  }
+  .risk-highlight[data-tier="high"]   { border-left-color: var(--risk-high);   background: color-mix(in srgb, var(--risk-high) 10%, transparent); }
+  .risk-highlight[data-tier="medium"] { border-left-color: var(--risk-medium); background: color-mix(in srgb, var(--risk-medium) 10%, transparent); }
+  .risk-highlight[data-tier="low"]    { border-left-color: var(--risk-low);    background: color-mix(in srgb, var(--risk-low) 10%, transparent); }
+  .risk-highlight[data-tier="uncertain"] { border-left-color: var(--text-muted); border-left-style: dashed; background: color-mix(in srgb, var(--text-muted) 10%, transparent); }
+  .risk-highlight[data-tier="high"]:hover   { background: color-mix(in srgb, var(--risk-high) 18%, transparent); }
+  .risk-highlight[data-tier="medium"]:hover { background: color-mix(in srgb, var(--risk-medium) 18%, transparent); }
+  .risk-highlight[data-tier="low"]:hover    { background: color-mix(in srgb, var(--risk-low) 18%, transparent); }
+  .risk-highlight[data-tier="uncertain"]:hover { background: color-mix(in srgb, var(--text-muted) 18%, transparent); }
+  .risk-highlight.selected { box-shadow: inset 0 0 0 2px var(--focus-ring); }
+  .risk-highlight:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--focus-ring); }
+
+  .mini-meter { display: inline-flex; flex: none; }
+  h3 .mini-meter[data-tier="high"], .legend-row[data-tier="high"] .mini-meter { color: var(--risk-high); }
+  h3 .mini-meter[data-tier="medium"], .legend-row[data-tier="medium"] .mini-meter { color: var(--risk-medium); }
+  h3 .mini-meter[data-tier="low"], .legend-row[data-tier="low"] .mini-meter { color: var(--risk-low); }
+  h3 .uncertain-ico, .legend-row[data-tier="uncertain"] .mini-meter { color: var(--text-muted); }
+
+  /* ---------- Comment pane ---------- */
+  .comment-pane {
+    flex: 1 1 40%; min-width: 320px; max-width: 420px;
+    height: calc(100vh - 96px); overflow-y: auto;
+    border-left: 1px solid var(--border); background: var(--surface-1);
+    padding: 22px 22px 40px;
+  }
+  .stats-row { margin-bottom: 16px; }
+  .stats-row .stat-chip {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .stats-row .stat-chip .n { font-weight: 800; color: var(--text-primary); font-size: 15px; margin-right: 2px; }
+
+  .legend { border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; background: var(--surface-2); margin-bottom: 20px; }
+  .legend-heading { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-muted); font-weight: 650; margin: 0 0 10px; }
+  .legend-row { display: flex; align-items: center; gap: 8px; padding: 5px 0; font-size: 12.5px; }
+  .legend-row .legend-label { flex: 1; color: var(--text-primary); font-weight: 600; }
+  .legend-row .legend-count { font-weight: 700; color: var(--text-secondary); }
+  .legend-note { font-size: 11px; color: var(--text-secondary); line-height: 1.55; margin: 10px 0 0; padding-top: 10px; border-top: 1px dashed var(--grid); }
+
+  .comment-empty { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding: 6px 2px; }
+
+  .clause-card { }
+  .clause-card .card-title { font-size: 12px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; margin: 0 0 10px; }
+  .clause-card .excerpt {
+    font-size: 12.5px; font-style: italic; color: var(--text-secondary); margin: 0 0 10px; line-height: 1.5;
+    border-left: 2px solid var(--grid); padding-left: 11px;
+  }
+  .badge-pill {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600;
+    padding: 5px 10px 5px 8px; border-radius: 999px; background: var(--page); border: 1px solid var(--border); color: var(--text-primary);
+  }
+  .badge-pill svg, .badge-pill .mini-meter { width: 15px; height: 15px; flex: none; }
+  .clause-card .explanation { font-size: 13px; color: var(--text-primary); margin: 10px 0 0; line-height: 1.55; }
+  .clause-card .disclaimer { font-size: 11.5px; color: var(--text-secondary); margin: 8px 0 0; line-height: 1.5; }
+  .clause-card .detail { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--grid); font-size: 12.5px; color: var(--text-secondary); line-height: 1.55; display: none; }
+  .clause-card .detail.open { display: block; }
+  .clause-card .detail .ref-badge { margin-bottom: 8px; }
+
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  @media (max-width: 860px) {
+    .split { flex-direction: column; }
+    .doc-pane, .comment-pane { height: auto; overflow-y: visible; max-width: none; }
+    .comment-pane { border-left: none; border-top: 1px solid var(--border); }
+  }
+
+  @media (max-width: 480px) {
+    .review-header { flex-wrap: wrap; row-gap: 10px; }
+    .review-header .brand-row { flex: 1 1 100%; }
+    .review-header .btn { width: 100%; }
+    .doc-pane, .comment-pane { padding-left: 16px; padding-right: 16px; }
+    .landing-inner h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="viz-root">
+
+  <!-- ============ VIEW 1: Landing ============ -->
+  <section id="view-landing" class="view active view-landing">
+    <div class="landing-inner">
+      <div class="logo-mark-lg">LC</div>
+      <h1>Legal Clause Explainer</h1>
+      <p class="landing-sub">Upload a lease or contract and see, in plain language, what's unusual about it — before you sign.</p>
+      <button id="uploadBtn" class="btn primary btn-lg">Upload a document to scan</button>
+      <p class="landing-note">Prototype demo — no file is actually uploaded or analyzed. Informational only, not a substitute for a licensed attorney.</p>
+    </div>
+  </section>
+
+  <!-- ============ VIEW 2: Loading (mocked scan) ============ -->
+  <section id="view-loading" class="view view-loading" aria-live="polite">
+    <div class="loading-inner">
+      <div class="scan-icon-wrap">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="3" width="13" height="18" rx="1.4"/>
+          <line x1="7" y1="8" x2="14" y2="8"/><line x1="7" y1="12" x2="14" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/>
+          <path class="sweep" d="M15.2 9c1.8 1 3.1 3 3.1 3s-1.3 2-3.1 3"/>
+        </svg>
+      </div>
+      <p>Scanning your document…</p>
+      <p class="file-tag">studio-lease-sample.txt</p>
+    </div>
+  </section>
+
+  <!-- ============ VIEW 3: Review (split screen) ============ -->
+  <section id="view-review" class="view view-review">
+    <header class="review-header">
+      <div class="brand-row">
+        <div class="logo-mark">LC</div>
+        <div>
+          <p class="app-title">Legal Clause Explainer</p>
+          <p class="app-tagline">Informational only — not a substitute for a licensed attorney.</p>
+        </div>
+      </div>
+      <button id="rescanBtn" class="btn">Scan another document</button>
+    </header>
+
+    <div class="file-strip">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.5h8l4 4v15h-12z"/><path d="M14 2.5v4h4"/></svg>
+      <span class="file-name">studio-lease-sample.txt</span>
+      <span>·</span>
+      <span id="fileStripCount">10 clauses found</span>
+    </div>
+
+    <p id="liveStatus" class="visually-hidden" aria-live="polite"></p>
+
+    <div class="split">
+      <div class="doc-pane">
+        <p class="doc-title">Commercial Lease Agreement</p>
+        <p class="doc-sub">Riverside Properties LLC — 118 Harrow Street, Unit 4B. Highlighted passages are worth a closer look; click one to see why on the right.</p>
+        <div id="docBody"></div>
+      </div>
+
+      <aside class="comment-pane">
+        <div class="stats-row">
+          <span class="stat-chip"><span class="n" id="statTotal">10</span> clauses reviewed</span>
+        </div>
+
+        <div class="legend">
+          <p class="legend-heading">Highlight scale</p>
+          <div id="legendBody"></div>
+          <p class="legend-note">These flags show how much a clause differs from typical patterns for this kind of document — not a legal risk or safety rating.</p>
+        </div>
+
+        <div id="commentBody">
+          <div class="comment-empty">Click a highlighted passage in the document to see why it was flagged.</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+</div>
+
+<script>
+const ICON_UNCERTAIN = `<svg class="uncertain-ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9" stroke-dasharray="2.6 3"/><path d="M9.4 9.6c0-1.7 1.2-3 2.8-3 1.5 0 2.7 1.1 2.7 2.4 0 1.8-2.2 2.1-2.5 3.7"/><circle cx="12.1" cy="16.6" r="0.95" fill="currentColor" stroke="none"/></svg>`;
+const ICON_COMPARED = `<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2.4" y="5" width="8.6" height="14" rx="1.3"/><rect x="13" y="5" width="8.6" height="14" rx="1.3" stroke-dasharray="2 2"/><line x1="11.2" y1="10.2" x2="11.2" y2="13.8"/><line x1="12.8" y1="10.2" x2="12.8" y2="13.8"/></svg>`;
+
+const METER_BARS = { high: [1,1,1], medium: [1,1,0], low: [1,0,0] };
+function meterSvg(tier, size) {
+  size = size || 16;
+  const specs = [[3,15,6],[10,10,11],[17,4,17]];
+  const bars = METER_BARS[tier];
+  const rects = bars.map((on, i) => {
+    const [x,y,h] = specs[i];
+    return on
+      ? `<rect x="${x}" y="${y}" width="4" height="${h}" rx="1.2" fill="currentColor"/>`
+      : `<rect x="${x}" y="${y}" width="4" height="${h}" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.3"/>`;
+  }).join('');
+  return `<svg class="mini-meter" data-tier="${tier}" viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true">${rects}</svg>`;
+}
+
+const TIER_LABEL = { high: 'Major flag', medium: 'Moderate flag', low: 'Minor flag', uncertain: 'Not sure' };
+
+const CLAUSES = {
+  renewal: {
+    tier: 'medium', section: 4, title: 'Renewal',
+    explanation: 'This clause auto-renews for a full additional year and requires 90 days’ notice to opt out — longer and more binding than what’s typical.',
+    refText: 'Reference pattern: renewal clauses typically require 30–60 days’ notice and convert to month-to-month. This one requires 90 days and auto-renews for a full additional one-year term regardless of intent to vacate.'
+  },
+  liability: {
+    tier: 'high', section: 6, title: 'Liability and Indemnification',
+    explanation: 'This clause makes the tenant responsible for damage “regardless of cause” and extends to acts by the landlord or third parties — broader than what’s typical.',
+    refText: 'Reference pattern: liability clauses are typically limited to damage caused by the tenant’s own negligence. This one extends to damage regardless of cause, including acts by the landlord, the landlord’s agents, or third parties.'
+  },
+  earlyTermination: {
+    tier: 'low', section: 7, title: 'Early Termination',
+    explanation: 'This clause sets a fixed, disclosed exit fee of three months’ rent — a defined cost, but still worth knowing about before you sign.',
+    refText: 'Reference pattern: early termination fees commonly range from one to two months’ rent. This one is three months’, on the higher end but clearly stated up front.'
+  },
+  dispute: {
+    tier: 'uncertain', section: 9, title: 'Dispute Resolution',
+    explanation: 'We couldn’t confidently match this to a common pattern — arbitration and jury-trial waiver terms vary widely by document type and region.'
+  }
+};
+
+const DOC_SECTIONS = [
+  { n: 1, title: 'Term', text: 'The initial term of this Lease shall be one (1) year, commencing September 1, 2026 and ending August 31, 2027 ("Initial Term").' },
+  { n: 2, title: 'Rent', text: 'Tenant shall pay Landlord monthly rent of $2,400, due on the first day of each month. A late fee of $75 applies to payments received after the 5th of the month.' },
+  { n: 3, title: 'Use of Premises', text: 'The Premises shall be used solely as an art and design studio and for no other purpose without Landlord’s prior written consent.' },
+  { n: 4, title: 'Renewal', flag: 'renewal', text: 'This Lease shall automatically renew for successive one-year terms upon the same terms and conditions unless either party provides written notice of non-renewal no less than ninety (90) days prior to the expiration of the then-current term. Failure to provide timely notice shall obligate Tenant to the full rent and terms of the renewal term regardless of Tenant’s intent to vacate.' },
+  { n: 5, title: 'Security Deposit', text: 'Tenant shall deposit $2,400 as security, refundable within 30 days of move-out less any deductions for damages, cleaning, or unpaid rent.' },
+  { n: 6, title: 'Liability and Indemnification', flag: 'liability', text: 'Tenant shall be responsible for all damage to the Premises occurring during the Lease term, regardless of cause, and shall indemnify, defend, and hold harmless Landlord from any and all claims, losses, or expenses arising out of Tenant’s use or occupancy of the Premises, including claims arising from the acts or omissions of third parties, Landlord, or Landlord’s agents.' },
+  { n: 7, title: 'Early Termination', flag: 'earlyTermination', text: 'Should Tenant terminate this Lease prior to the end of the then-current term for any reason, Tenant shall owe Landlord an early termination fee equal to three (3) months’ rent, in addition to rent accrued through the date of termination, which sum shall be immediately due and payable.' },
+  { n: 8, title: 'Alterations', text: 'Tenant may not make alterations to the Premises without Landlord’s prior written consent, which consent shall not be unreasonably withheld.' },
+  { n: 9, title: 'Dispute Resolution', flag: 'dispute', text: 'Any dispute arising under this Lease shall be resolved exclusively through binding arbitration administered under the rules then in effect, and each party waives any right to a jury trial or to participate in a class action.' },
+  { n: 10, title: 'Governing Law', text: 'This Lease shall be governed by the laws of the state in which the Premises are located.' }
+];
+
+// ---------- render document ----------
+const docBody = document.getElementById('docBody');
+DOC_SECTIONS.forEach(sec => {
+  const wrap = document.createElement('div');
+  wrap.className = 'doc-section';
+  const clause = sec.flag ? CLAUSES[sec.flag] : null;
+  const badge = clause
+    ? (clause.tier === 'uncertain' ? ICON_UNCERTAIN : meterSvg(clause.tier, 15))
+    : '';
+  wrap.innerHTML = `<h3>${sec.n}. ${sec.title}${badge}</h3>`;
+  if (clause) {
+    const btn = document.createElement('button');
+    btn.className = 'risk-highlight';
+    btn.dataset.tier = clause.tier;
+    btn.dataset.key = sec.flag;
+    btn.textContent = sec.text;
+    wrap.appendChild(btn);
+  } else {
+    const p = document.createElement('p');
+    p.textContent = sec.text;
+    wrap.appendChild(p);
+  }
+  docBody.appendChild(wrap);
+});
+
+// ---------- render legend ----------
+const counts = { high: 0, medium: 0, low: 0, uncertain: 0 };
+Object.values(CLAUSES).forEach(c => counts[c.tier]++);
+const legendBody = document.getElementById('legendBody');
+['high','medium','low','uncertain'].forEach(tier => {
+  const row = document.createElement('div');
+  row.className = 'legend-row';
+  row.dataset.tier = tier;
+  const icon = tier === 'uncertain' ? ICON_UNCERTAIN : meterSvg(tier, 16);
+  row.innerHTML = `${icon}<span class="legend-label">${TIER_LABEL[tier]}</span><span class="legend-count">${counts[tier]}</span>`;
+  legendBody.appendChild(row);
+});
+document.getElementById('statTotal').textContent = DOC_SECTIONS.length;
+document.getElementById('fileStripCount').textContent = DOC_SECTIONS.length + ' clauses found';
+
+// ---------- comment pane rendering ----------
+const commentBody = document.getElementById('commentBody');
+const liveStatus = document.getElementById('liveStatus');
+
+function renderComment(key) {
+  const c = CLAUSES[key];
+  const badge = c.tier === 'uncertain'
+    ? `<span class="badge-pill">${ICON_UNCERTAIN}<span>Not sure — ask a professional</span></span>`
+    : `<span class="badge-pill">${meterSvg(c.tier, 15)}<span>${TIER_LABEL[c.tier]}</span></span>`;
+  const disclaimer = c.tier === 'uncertain'
+    ? 'Informational only, not legal advice — a licensed attorney can tell you more than we can here.'
+    : 'Informational only, not legal advice — consider having this reviewed by a licensed attorney.';
+  let html = `
+    <div class="clause-card">
+      <p class="card-title">Section ${c.section} — ${c.title}</p>
+      ${badge}
+      <p class="explanation">${c.explanation}</p>
+      <p class="disclaimer">${disclaimer}</p>`;
+  if (c.refText) {
+    html += `
+      <button class="btn-ghost why-btn" style="margin-top:10px;"><span class="chevron">›</span>Why was this flagged?</button>
+      <div class="detail">
+        <span class="badge-pill ref-badge">${ICON_COMPARED}<span>Compared against a reference pattern</span></span>
+        <p style="margin:0;">${c.refText}</p>
+      </div>`;
+  }
+  html += `</div>`;
+  commentBody.innerHTML = html;
+
+  const whyBtn = commentBody.querySelector('.why-btn');
+  if (whyBtn) {
+    const detail = commentBody.querySelector('.detail');
+    whyBtn.addEventListener('click', () => {
+      const isOpen = detail.classList.toggle('open');
+      whyBtn.classList.toggle('expanded', isOpen);
+      whyBtn.innerHTML = `<span class="chevron">›</span>${isOpen ? 'Hide details' : 'Why was this flagged?'}`;
+    });
+  }
+
+  liveStatus.textContent = `Showing details for ${c.title}, ${c.tier === 'uncertain' ? 'not sure' : TIER_LABEL[c.tier].toLowerCase()}.`;
+}
+
+docBody.addEventListener('click', (e) => {
+  const btn = e.target.closest('.risk-highlight');
+  if (!btn) return;
+  docBody.querySelectorAll('.risk-highlight.selected').forEach(el => el.classList.remove('selected'));
+  btn.classList.add('selected');
+  renderComment(btn.dataset.key);
+});
+
+// ---------- view switching ----------
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+document.getElementById('uploadBtn').addEventListener('click', () => {
+  showView('view-loading');
+  setTimeout(() => {
+    showView('view-review');
+    liveStatus.textContent = `Scan complete — ${DOC_SECTIONS.length} clauses reviewed: ${counts.high} major flag, ${counts.medium} moderate flag, ${counts.low} minor flag, ${counts.uncertain} not sure.`;
+  }, 1400);
+});
+
+document.getElementById('rescanBtn').addEventListener('click', () => {
+  docBody.querySelectorAll('.risk-highlight.selected').forEach(el => el.classList.remove('selected'));
+  commentBody.innerHTML = '<div class="comment-empty">Click a highlighted passage in the document to see why it was flagged.</div>';
+  showView('view-landing');
+});
+</script>
+</body>
+</html>
